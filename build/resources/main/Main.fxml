@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <VBox layoutY="27.0" prefHeight="874.0" prefWidth="49.0" style="-fx-background-color: #DCDCDC;">
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+         <children>
+            <Separator prefHeight="43.0" prefWidth="50.0" visible="false" />
+            <Button fx:id="newNote" mnemonicParsing="false" onAction="#NewNote" prefHeight="58.0" prefWidth="50.0" text="+">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+      <MenuBar layoutY="1.0" prefHeight="26.0" prefWidth="1190.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#CloseApp" text="Quit" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox layoutX="541.0" layoutY="27.0" prefHeight="811.0" prefWidth="650.0">
+         <children>
+            <TextField fx:id="title" prefWidth="20.0" text="Note title" />
+            <TextField fx:id="dateCreated" text="Date created:" />
+            <TextArea fx:id="body" prefHeight="200.0" prefWidth="200.0" />
+            <Button fx:id="save" mnemonicParsing="false" onAction="#onSaveData" text="Save" />
+         </children>
+      </VBox>
+      <Label layoutX="67.0" layoutY="27.0" prefHeight="43.0" prefWidth="445.0" text="my notes">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Separator layoutX="50.0" layoutY="27.0" orientation="VERTICAL" prefHeight="811.0" prefWidth="14.0" />
+      <VBox fx:id="noteContainer" layoutX="67.0" layoutY="70.0" prefHeight="770.0" prefWidth="459.0" />
+   </children>
+</AnchorPane>
