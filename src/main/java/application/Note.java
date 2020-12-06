@@ -1,15 +1,16 @@
 package application;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Note {
 
     private int id;
     private String title;
-    private Date dateCreated;
+    private LocalDateTime dateCreated;
     private String body;
 
-    public Note (int id, String title, Date dateCreated, String body) {
+    public Note (int id, String title, LocalDateTime dateCreated, String body) {
         this.id = id;
         this.title = title;
         this.dateCreated = dateCreated;
@@ -20,7 +21,7 @@ public class Note {
 
     public String getTitle() {return this.title;}
 
-    public Date getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return this.dateCreated;
     }
 

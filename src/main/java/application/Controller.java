@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Controller implements Initializable {
@@ -19,7 +21,7 @@ public class Controller implements Initializable {
 
     ArrayList<Note> notesList = new ArrayList<>();
 
-    public int count = 1;   // used to assign id to note
+    public int count = 1;   // used to assign id to note //TODO: Need to change this value based on highest out of note_id when read in DB
 
     Button currentButton;
 
@@ -48,15 +50,28 @@ public class Controller implements Initializable {
         System.exit(0);
     }
 
-    public ArrayList<Note> NewNote(ActionEvent event) {
-        // create new note and add to notesList
-        Note newNote = new Note(count, "New Note", new Date(), "");
+    public ArrayList<Note> NewNote(ActionEvent event) throws SQLException {
+        // create new note
+        Note newNote = new Note(count, "New Note", LocalDateTime.now(), "");
+
+        // convert dateCreated to String because sqlite doesn't have a date data type
+        String noteDateAsString = newNote.getDateCreated().toString();
+
+        // TODO: Is there a way I can do this without opening up the DB again? It's already opened by Main
+        Datasource datasource = new Datasource();
+        datasource.open();
+        datasource.insertNote(newNote.getId(), newNote.getTitle(), noteDateAsString, newNote.getBody());
+
+        // now should I close the DB?
+
+
         // why do I have both a hashmap and arraylist of notes?
+        // add note to noteslist
         notesList.add(newNote);
         notes.put(Integer.toString(count), newNote);
         count++;
 
-        // create a button to allow user to select new note
+        // create a new button to allow user to select new note
         Button btn = new Button("New Note");
         btn.setId(Integer.toString(newNote.getId()));
 
