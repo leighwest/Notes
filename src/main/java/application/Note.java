@@ -1,7 +1,6 @@
 package application;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Note {
 
@@ -17,6 +16,9 @@ public class Note {
         this.body = body;
     }
 
+    // Default constructor
+    public Note() {}
+
     public int getId() {return this.id;}
 
     public String getTitle() {return this.title;}
@@ -26,6 +28,10 @@ public class Note {
     }
 
     public String getBody() {return this.body;}
+
+    public void setID(Integer id) {this.id = id;};
+
+    public void setDateCreated(LocalDateTime dateCreated) {this.dateCreated = dateCreated;};
 
     public void setTitle(String title) {
         this.title = title;

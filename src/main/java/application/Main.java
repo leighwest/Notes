@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class Main extends Application {
 
     public static void main(String[] args) {
@@ -22,12 +24,5 @@ public class Main extends Application {
         primaryStage.setTitle("Notes");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        // Open database
-        Datasource datasource = new Datasource();
-        datasource.open();
-
-
-
     }
 }
