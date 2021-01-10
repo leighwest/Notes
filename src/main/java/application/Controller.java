@@ -76,7 +76,15 @@ public class Controller implements Initializable {
                         System.out.println(btn.getId() + " clicked!");
                         Note n = (Note) (((Button) e.getSource()).getUserData());
                         title.setText(n.getTitle());
-//                        dateCreated.setText("Date created: " + n.getDateCreated().toString());
+
+                        Integer dayCreated = n.getDateCreated().getDayOfMonth();
+                        String monthCreated = n.getDateCreated().getMonth().toString();
+                        Integer yearCreated = n.getDateCreated().getYear();
+                        dateCreated.setText("Date created: " + dayCreated.toString() + ' ' +
+                        monthCreated.substring(0, 1) + monthCreated.substring(1).toLowerCase() + ' ' +
+                        yearCreated);
+
+//                        dateCreated.setText("Date created: " + n.getDateCreated());
                         body.setText(n.getBody());
                         currentButton = (Button) e.getSource();
                     }
@@ -144,7 +152,12 @@ public class Controller implements Initializable {
         btn.setOnAction(e -> {
                     System.out.println(btn.getId() + " clicked!");
                     title.setText(newNote.getTitle());
-                    dateCreated.setText("Date created: " + newNote.getDateCreated().toString());
+                    Integer dayCreated = newNote.getDateCreated().getDayOfMonth();
+                    String monthCreated = newNote.getDateCreated().getMonth().toString();
+                    Integer yearCreated = newNote.getDateCreated().getYear();
+                    dateCreated.setText("Date created: " + dayCreated.toString() + ' ' +
+                            monthCreated.substring(0, 1) + monthCreated.substring(1).toLowerCase() + ' ' +
+                            yearCreated);
                     body.setText(newNote.getBody());
                     currentButton = (Button) e.getSource();
                 }
@@ -183,10 +196,12 @@ public class Controller implements Initializable {
 //        Note note = notes.get(currentButton.getId());
         Note note = existingNotes.get(Integer.parseInt(currentButton.getId()));
         System.out.println(currentButton.getId());
-        System.out.println(note);
+        System.out.println("the notes' contents are: " + note);
         // it's blowing up because note is null because if the note exists at start-up it is stored in existingNotes not notes
         // I've tried fixing this by adding new notes to existingNotes instead
         note.setTitle(title.getText());
+        System.out.println("date created is: " + note.getDateCreated());
+
         note.setBody(body.getText());
 
 // Brendan's 3 lines commented out below, trying mine above

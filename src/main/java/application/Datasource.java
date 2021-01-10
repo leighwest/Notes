@@ -1,6 +1,7 @@
 package application;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,6 +126,7 @@ public class Datasource {
                 Note note = new Note();
                 note.setID(results.getInt(COLUMN_NOTES_ID));
                 note.setTitle(results.getString(COLUMN_NOTES_TITLE));
+                note.setDateCreated(LocalDateTime.parse(results.getString(COLUMN_NOTES_DATECREATED)));
 //                TODO: need to convert sql text to java localDateTime
                 note.setBody(results.getString(COLUMN_NOTES_BODY));
                 notes.add(note);

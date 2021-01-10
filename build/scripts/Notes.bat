@@ -79,7 +79,7 @@ set CMD_LINE_ARGS=%*
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\Notes-1.0-SNAPSHOT.jar;%APP_HOME%\lib\javafx-fxml-13-win.jar;%APP_HOME%\lib\javafx-controls-13-win.jar;%APP_HOME%\lib\javafx-controls-13.jar;%APP_HOME%\lib\javafx-graphics-13-win.jar;%APP_HOME%\lib\javafx-graphics-13.jar;%APP_HOME%\lib\javafx-base-13-win.jar;%APP_HOME%\lib\javafx-base-13.jar
+set CLASSPATH=%APP_HOME%\lib\Notes-1.0-SNAPSHOT.jar;%APP_HOME%\lib\sqlite-jdbc-3.32.3.2.jar;%APP_HOME%\lib\javafx-fxml-13-win.jar;%APP_HOME%\lib\javafx-controls-13-win.jar;%APP_HOME%\lib\javafx-controls-13.jar;%APP_HOME%\lib\javafx-graphics-13-win.jar;%APP_HOME%\lib\javafx-graphics-13.jar;%APP_HOME%\lib\javafx-base-13-win.jar;%APP_HOME%\lib\javafx-base-13.jar
 
 @rem Execute Notes
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %NOTES_OPTS%  -classpath "%CLASSPATH%" application.Main %CMD_LINE_ARGS%
