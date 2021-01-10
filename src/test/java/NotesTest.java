@@ -19,6 +19,10 @@ public class NotesTest {
         assertEquals("New Note", note.getTitle());
     }
 
+    /*
+    The getDateCreated test is considered as passed if the date returned from getDateCreated() is
+    within +/- 1 minute of the current date and time.
+     */
     @Test
     public void testGetDateCreated() {
         boolean actualValue = note.getDateCreated().minusMinutes(1).isBefore(LocalDateTime.now()) && note.getDateCreated().plusMinutes(1).isAfter(LocalDateTime.now());
