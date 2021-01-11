@@ -83,6 +83,9 @@ task jenkinsTest{
 
 }
 
+build.dependsOn(jenkinsTest)
+
+
 jacocoTestReport {
     dependsOn test
 }
