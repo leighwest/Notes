@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Datasource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Notes</a> &gt; <a href="index.source.html" class="el_package">application</a> &gt; <span class="el_source">Datasource.java</span></div><h1>Datasource.java</h1><pre class="source lang-java linenums">package application;
+
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="nc" id="L8">public class Datasource {</span>
+    public static final String DB_NAME = &quot;notes.db&quot;;
+
+    public static final String CONNECTION_STRING = &quot;jdbc:sqlite:C:\\Users\\Leigh West\\OneDrive\\Documents\\Notes\\&quot; + DB_NAME;
+
+    public static final String TABLE_NOTES = &quot;notes&quot;;
+    public static final String COLUMN_NOTES_ID = &quot;id&quot;;
+    public static final String COLUMN_NOTES_TITLE = &quot;title&quot;;
+    public static final String COLUMN_NOTES_DATECREATED = &quot;dateCreated&quot;;
+    public static final String COLUMN_NOTES_BODY = &quot;body&quot;;
+
+    public static final String INSERT_NOTE = &quot;INSERT INTO &quot; + TABLE_NOTES +
+            '(' + COLUMN_NOTES_ID + &quot;, &quot; + COLUMN_NOTES_TITLE + &quot;, &quot; + COLUMN_NOTES_DATECREATED + &quot;, &quot; + COLUMN_NOTES_BODY +
+            &quot;) VALUES(?, ?, ?, ?)&quot;;
+
+    // NOT sure if I need this, all it does is return the notes ID when I'm giving it the notes ID
+    public static final String QUERY_NOTE = &quot;SELECT &quot; + COLUMN_NOTES_ID + &quot; FROM &quot; +
+            TABLE_NOTES + &quot; WHERE &quot; + COLUMN_NOTES_ID + &quot; = ?&quot;;
+
+    public static final String UPDATE_NOTE = &quot;UPDATE &quot; + TABLE_NOTES + &quot; SET &quot; +
+            COLUMN_NOTES_TITLE + &quot; = ?, &quot; + COLUMN_NOTES_BODY + &quot; = ? WHERE &quot; + COLUMN_NOTES_ID + &quot; = ?&quot;;
+
+
+    private Connection conn;
+
+    private PreparedStatement insertIntoNotes;
+
+    private PreparedStatement queryNote;
+
+    private PreparedStatement updateNote;
+
+    public boolean open() {
+        try {
+<span class="nc" id="L41">            conn = DriverManager.getConnection(CONNECTION_STRING);</span>
+
+            // TESTING DB ERRORS, DELETE AFTER
+//            Statement statement1 = conn.createStatement();
+//            statement1.execute(&quot;DROP TABLE IF EXISTS &quot; + TABLE_NOTES);
+
+            // If database does not contain notes table, create one
+<span class="nc" id="L48">            Statement statement = conn.createStatement();</span>
+<span class="nc" id="L49">            statement.execute(&quot;CREATE TABLE IF NOT EXISTS &quot; + TABLE_NOTES +</span>
+                    &quot; (&quot; + COLUMN_NOTES_ID + &quot; integer, &quot; +
+                    COLUMN_NOTES_TITLE + &quot; text, &quot; +
+                    COLUMN_NOTES_DATECREATED + &quot; text, &quot; +
+                    COLUMN_NOTES_BODY + &quot; text&quot; +
+                    &quot;)&quot;);
+
+<span class="nc" id="L56">            insertIntoNotes = conn.prepareStatement(INSERT_NOTE);</span>
+<span class="nc" id="L57">            return true;</span>
+<span class="nc" id="L58">        } catch (SQLException e) {</span>
+<span class="nc" id="L59">            System.out.println(&quot;Something went wrong: &quot; + e.getMessage());</span>
+<span class="nc" id="L60">            e.printStackTrace();</span>
+<span class="nc" id="L61">            return false;</span>
+        }
+    }
+
+    public void close() {
+        try {
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            if (insertIntoNotes != null) {</span>
+<span class="nc" id="L68">                insertIntoNotes.close();</span>
+            }
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">            if (queryNote != null) {</span>
+<span class="nc" id="L72">                queryNote.close();</span>
+            }
+<span class="nc" id="L74">        } catch (SQLException e) {</span>
+<span class="nc" id="L75">            System.out.println(&quot;Couldn't close connection: &quot; + e.getMessage());</span>
+<span class="nc" id="L76">            e.printStackTrace();</span>
+<span class="nc" id="L77">        }</span>
+<span class="nc" id="L78">    }</span>
+
+    public boolean insertNote(Integer id, String title, String dateCreated, String body) {
+        try {
+<span class="nc" id="L82">            conn = DriverManager.getConnection(CONNECTION_STRING);</span>
+<span class="nc" id="L83">            queryNote = conn.prepareStatement(QUERY_NOTE);</span>
+
+<span class="nc" id="L85">            queryNote.setInt(1, id);</span>
+<span class="nc" id="L86">            ResultSet results = queryNote.executeQuery();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (results.next()) {</span>
+<span class="nc" id="L88">                return false;</span>
+            } else {
+                // Insert the note
+<span class="nc" id="L91">                insertIntoNotes.setInt(1, id);</span>
+<span class="nc" id="L92">                insertIntoNotes.setString(2, title);</span>
+<span class="nc" id="L93">                insertIntoNotes.setString(3, dateCreated);</span>
+<span class="nc" id="L94">                insertIntoNotes.setString(4, body);</span>
+<span class="nc" id="L95">                int affectedRows = insertIntoNotes.executeUpdate();</span>
+
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                if (affectedRows != 1) {</span>
+<span class="nc" id="L98">                    return false;</span>
+                }
+<span class="nc" id="L100">                return true;</span>
+            }
+<span class="nc" id="L102">        } catch (SQLException e) {</span>
+<span class="nc" id="L103">            System.out.println(&quot;Insert failed: &quot; + e.getMessage());</span>
+        } finally {
+            try {
+<span class="nc" id="L106">                conn.close();</span>
+<span class="nc" id="L107">            } catch (SQLException e) {</span>
+<span class="nc" id="L108">                System.out.println(&quot;Unable to close connection: &quot; + e.getMessage());</span>
+<span class="nc" id="L109">            }</span>
+        }
+<span class="nc" id="L111">        return false;</span>
+    }
+
+    public List&lt;Note&gt; retrieveNotes() {
+<span class="nc" id="L115">        Statement statement = null;</span>
+<span class="nc" id="L116">        ResultSet results = null;</span>
+
+        try {
+<span class="nc" id="L119">            conn = DriverManager.getConnection(CONNECTION_STRING);</span>
+
+<span class="nc" id="L121">            statement = conn.createStatement();</span>
+<span class="nc" id="L122">            results = statement.executeQuery(&quot;SELECT * FROM &quot; + TABLE_NOTES);</span>
+
+<span class="nc" id="L124">            List&lt;Note&gt; notes = new ArrayList&lt;Note&gt;();</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            while(results.next()) {</span>
+<span class="nc" id="L126">                Note note = new Note();</span>
+<span class="nc" id="L127">                note.setID(results.getInt(COLUMN_NOTES_ID));</span>
+<span class="nc" id="L128">                note.setTitle(results.getString(COLUMN_NOTES_TITLE));</span>
+<span class="nc" id="L129">                note.setDateCreated(LocalDateTime.parse(results.getString(COLUMN_NOTES_DATECREATED)));</span>
+//                TODO: need to convert sql text to java localDateTime
+<span class="nc" id="L131">                note.setBody(results.getString(COLUMN_NOTES_BODY));</span>
+<span class="nc" id="L132">                notes.add(note);</span>
+<span class="nc" id="L133">            }</span>
+<span class="nc" id="L134">            return notes;</span>
+<span class="nc" id="L135">        } catch(SQLException e) {</span>
+<span class="nc" id="L136">            System.out.println(&quot;Query failed &quot; + e.getMessage());</span>
+<span class="nc" id="L137">            e.printStackTrace();</span>
+<span class="nc" id="L138">            return null;</span>
+        } finally {
+            try {
+<span class="nc" id="L141">                conn.close();</span>
+<span class="nc" id="L142">            } catch(SQLException e) {</span>
+<span class="nc" id="L143">                System.out.println(&quot;Unable to close connection: &quot; + e.getMessage());</span>
+<span class="nc" id="L144">            }</span>
+        }
+    }
+
+    public boolean updateNote (Integer id, String newTitle, String body) {
+        try {
+<span class="nc" id="L150">            conn = DriverManager.getConnection(CONNECTION_STRING);</span>
+
+<span class="nc" id="L152">            updateNote = conn.prepareStatement(UPDATE_NOTE);</span>
+
+<span class="nc" id="L154">            updateNote.setString(1, newTitle);</span>
+<span class="nc" id="L155">            updateNote.setString(2, body);</span>
+<span class="nc" id="L156">            updateNote.setInt(3, id);</span>
+
+<span class="nc" id="L158">            int affectedNote = updateNote.executeUpdate();</span>
+
+<span class="nc bnc" id="L160" title="All 2 branches missed.">            return affectedNote == 1;</span>
+<span class="nc" id="L161">        } catch(SQLException e) {</span>
+<span class="nc" id="L162">            System.out.println(&quot;Update failed: &quot; + e.getMessage());</span>
+<span class="nc" id="L163">            e.printStackTrace();</span>
+<span class="nc" id="L164">            return false;</span>
+        } finally {
+            try {
+<span class="nc" id="L167">                conn.close();</span>
+<span class="nc" id="L168">            } catch(SQLException e) {</span>
+<span class="nc" id="L169">                System.out.println(&quot;Unable to close connection: &quot; + e.getMessage());</span>
+<span class="nc" id="L170">            }</span>
+        }
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

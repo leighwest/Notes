@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Controller.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Notes</a> &gt; <a href="index.source.html" class="el_package">application</a> &gt; <span class="el_source">Controller.java</span></div><h1>Controller.java</h1><pre class="source lang-java linenums">package application;
+
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+
+import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.*;
+
+<span class="nc" id="L18">public class Controller implements Initializable {</span>
+
+<span class="nc" id="L20">    HashMap&lt;String, Note&gt; notes = new HashMap&lt;&gt;();</span>
+
+    List&lt;Note&gt; existingNotes;
+
+    // count is used to poorly implement a random ID for each note
+    // TODO: Need to change this value based on highest out of note_id when read in DB
+//    Random rand = new Random();
+
+
+    int count;
+
+    Button currentButton;
+
+    @FXML
+    public VBox noteContainer;
+
+    @FXML
+    public TextField title;
+
+    @FXML
+    public TextField dateCreated;
+
+    @FXML
+    public TextArea body;
+
+    @FXML
+    public Button save;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Open database
+<span class="nc" id="L51">        Datasource datasource = new Datasource();</span>
+<span class="nc" id="L52">        datasource.open();</span>
+
+        // this might not be a good way to do this...
+//        List&lt;Note&gt; existingNotes = datasource.retrieveNotes();
+<span class="nc" id="L56">        existingNotes = datasource.retrieveNotes();</span>
+
+<span class="nc" id="L58">        count = existingNotes.size();</span>
+
+//        TEST
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        for (int i = 0; i &lt; existingNotes.size(); i++) {</span>
+
+<span class="nc" id="L63">            String buttonTitle = existingNotes.get(i).getTitle();</span>
+<span class="nc" id="L64">            Integer buttonId = existingNotes.get(i).getId();</span>
+<span class="nc" id="L65">            Button btn = new Button(buttonTitle);</span>
+
+            // attach note to button as user data
+<span class="nc" id="L68">            btn.setUserData(existingNotes.get(i));</span>
+
+<span class="nc" id="L70">            btn.setText(buttonTitle);</span>
+
+<span class="nc" id="L72">            btn.setId(buttonId.toString());</span>
+<span class="nc" id="L73">            noteContainer.getChildren().add(btn);</span>
+
+<span class="nc" id="L75">            btn.setOnAction(e -&gt; {</span>
+<span class="nc" id="L76">                        System.out.println(btn.getId() + &quot; clicked!&quot;);</span>
+<span class="nc" id="L77">                        Note n = (Note) (((Button) e.getSource()).getUserData());</span>
+<span class="nc" id="L78">                        title.setText(n.getTitle());</span>
+
+<span class="nc" id="L80">                        Integer dayCreated = n.getDateCreated().getDayOfMonth();</span>
+<span class="nc" id="L81">                        String monthCreated = n.getDateCreated().getMonth().toString();</span>
+<span class="nc" id="L82">                        Integer yearCreated = n.getDateCreated().getYear();</span>
+<span class="nc" id="L83">                        dateCreated.setText(&quot;Date created: &quot; + dayCreated.toString() + ' ' +</span>
+<span class="nc" id="L84">                        monthCreated.substring(0, 1) + monthCreated.substring(1).toLowerCase() + ' ' +</span>
+                        yearCreated);
+
+//                        dateCreated.setText(&quot;Date created: &quot; + n.getDateCreated());
+<span class="nc" id="L88">                        body.setText(n.getBody());</span>
+<span class="nc" id="L89">                        currentButton = (Button) e.getSource();</span>
+<span class="nc" id="L90">                    }</span>
+            );
+
+<span class="nc" id="L93">            System.out.println(existingNotes.get(i).getId());</span>
+<span class="nc" id="L94">            System.out.println(btn.getId());</span>
+        }
+<span class="nc" id="L96">    }</span>
+
+    public void CloseApp(ActionEvent event) {
+<span class="nc" id="L99">        Platform.exit();</span>
+<span class="nc" id="L100">        System.exit(0);</span>
+<span class="nc" id="L101">    }</span>
+
+    public List&lt;Note&gt; NewNote(ActionEvent event) throws SQLException {
+        // create new note
+<span class="nc" id="L105">        Note newNote = new Note(count, &quot;New Note&quot;, LocalDateTime.now(), &quot;&quot;);</span>
+
+        // convert dateCreated to String because sqlite doesn't have a date data type
+<span class="nc" id="L108">        String noteDateAsString = newNote.getDateCreated().toString();</span>
+
+        // TODO: Is there a way I can do this without opening up the DB again? It's already opened by Main
+<span class="nc" id="L111">        Datasource datasource = new Datasource();</span>
+<span class="nc" id="L112">        datasource.open();</span>
+<span class="nc" id="L113">        datasource.insertNote(newNote.getId(), newNote.getTitle(), noteDateAsString, newNote.getBody());</span>
+
+        // now should I close the DB?
+<span class="nc" id="L116">        datasource.close();</span>
+
+        // why do I have both a hashmap and arraylist of notes?
+        // add note to noteslist
+//        notesList.add(newNote);
+<span class="nc" id="L121">        existingNotes.add(newNote);</span>
+//        notes.put(Integer.toString(count), newNote);
+<span class="nc" id="L123">        count++;</span>
+
+        // create a new button to allow user to select the new note
+<span class="nc" id="L126">        Button btn = new Button(&quot;New Note&quot;);</span>
+<span class="nc" id="L127">        btn.setId(Integer.toString(newNote.getId()));</span>
+
+<span class="nc" id="L129">        btn.setUserData(btn);</span>
+
+
+        // add button to the button container
+<span class="nc" id="L133">        noteContainer.getChildren().add(btn);</span>
+
+<span class="nc" id="L135">        btn.setTextFill(Color.BLACK);</span>
+
+        // presents the stored note data to the user when particular note button is clicked
+//        btn.setOnAction(e -&gt; {
+//            System.out.println(btn.getId() + &quot; clicked!&quot;);
+//            Note n = (Note) (((Button) e.getSource()).getUserData());
+//            title.setText(n.getTitle());
+//            dateCreated.setText(&quot;Date created: &quot; + n.getDateCreated().toString());
+//            body.setText(n.getBody());
+
+
+
+
+//            currentButton = (Button) e.getSource();
+//            }
+//        );
+        // old code
+<span class="nc" id="L152">        btn.setOnAction(e -&gt; {</span>
+<span class="nc" id="L153">                    System.out.println(btn.getId() + &quot; clicked!&quot;);</span>
+<span class="nc" id="L154">                    title.setText(newNote.getTitle());</span>
+<span class="nc" id="L155">                    Integer dayCreated = newNote.getDateCreated().getDayOfMonth();</span>
+<span class="nc" id="L156">                    String monthCreated = newNote.getDateCreated().getMonth().toString();</span>
+<span class="nc" id="L157">                    Integer yearCreated = newNote.getDateCreated().getYear();</span>
+<span class="nc" id="L158">                    dateCreated.setText(&quot;Date created: &quot; + dayCreated.toString() + ' ' +</span>
+<span class="nc" id="L159">                            monthCreated.substring(0, 1) + monthCreated.substring(1).toLowerCase() + ' ' +</span>
+                            yearCreated);
+<span class="nc" id="L161">                    body.setText(newNote.getBody());</span>
+<span class="nc" id="L162">                    currentButton = (Button) e.getSource();</span>
+<span class="nc" id="L163">                }</span>
+        );
+
+//        return notesList;
+<span class="nc" id="L167">        return existingNotes;</span>
+    }
+
+//    ###################
+//    Problem: before the below changes, if DB was empty the code would break on save.
+//    with my changes below (reversion to old code) a newly created note will save and the data persists
+//    when the program is loaded again, but if I then try to save again it breaks.
+
+//    Update: I determined that it was because I was creating a new Note by calling .get() on notes. Notes was empty
+//    because it's existingNotes that is populated on initialisation. I've since tried only using existingNotes to store
+//    both old and new notes but now I'm getting an index out of bounds error on save.
+
+//    Update2: The index out of bounds error was occuring when I passed currentButton.getId to existingNotes.get(). This value
+//    was a random int up to 1000, so it was trying to get a note with an ID of 436 for example from a list of length 3 or 4. I've
+//    changed count back to start at 0 and increment by 1 each time a new note is created but I need a way to iterate through the existing
+//    notes on start up and update count so that count doesn't start from 0 on each start-up resulting in duplicate IDs.
+
+//    Update3: I think I've fixed the count issue by setting count equal to existingNotes.size() in the initialization method. There will be an
+//    issue when I create a delete method because if I delete a note that doesn't have the highest ID then when count is re-initialised on
+//    start up there will be a duplicate ID when I create a new note. I could probably fix this by iterating through all IDs and setting count
+//    to be the highest ID in the existingNotes list. 
+//    #####################
+
+
+    @FXML
+    public void onSaveData(ActionEvent event) throws SQLException {
+
+<span class="nc" id="L194">        currentButton.setText(title.getText());</span>
+
+//        Note note = notes.get(currentButton.getId());
+<span class="nc" id="L197">        Note note = existingNotes.get(Integer.parseInt(currentButton.getId()));</span>
+<span class="nc" id="L198">        System.out.println(currentButton.getId());</span>
+<span class="nc" id="L199">        System.out.println(&quot;the notes' contents are: &quot; + note);</span>
+        // it's blowing up because note is null because if the note exists at start-up it is stored in existingNotes not notes
+        // I've tried fixing this by adding new notes to existingNotes instead
+<span class="nc" id="L202">        note.setTitle(title.getText());</span>
+<span class="nc" id="L203">        System.out.println(&quot;date created is: &quot; + note.getDateCreated());</span>
+
+<span class="nc" id="L205">        note.setBody(body.getText());</span>
+
+// Brendan's 3 lines commented out below, trying mine above
+//        Note n = (Note) currentButton.getUserData();
+//        n.setTitle(title.getText());
+//        n.setBody(body.getText());
+
+        //TODO: have to update note title, body in database on save
+<span class="nc" id="L213">        Datasource datasource = new Datasource();</span>
+
+//        changing n to note
+<span class="nc" id="L216">        System.out.println(&quot;saving to db, id: &quot; + note.getId() + &quot; note.getTitle: &quot; + note.getTitle() + &quot; note.getText(): &quot; + title.getText());</span>
+<span class="nc" id="L217">        datasource.updateNote(note.getId(), title.getText(), body.getText());</span>
+
+<span class="nc" id="L219">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

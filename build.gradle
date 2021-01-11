@@ -71,21 +71,21 @@ test {
         }
     }
 
-//    finalizedBy jacocoTestReport
+    finalizedBy jacocoTestReport
 }
 
-task jenkinsTest{
-    inputs.files test.outputs.files
-    doLast{
-        def timestamp = System.currentTimeMillis()
-        test.testResultsDir.eachFile { it.lastModified = timestamp }
-    }
-
-}
-
-//jacocoTestReport {
-//    dependsOn test
+//task jenkinsTest{
+//    inputs.files test.outputs.files
+//    doLast{
+//        def timestamp = System.currentTimeMillis()
+//        test.testResultsDir.eachFile { it.lastModified = timestamp }
+//    }
+//
 //}
+
+jacocoTestReport {
+    dependsOn test
+}
 
 javafx {
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
