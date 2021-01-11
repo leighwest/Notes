@@ -74,14 +74,14 @@ test {
     finalizedBy jacocoTestReport
 }
 
-//task jenkinsTest{
-//    inputs.files test.outputs.files
-//    doLast{
-//        def timestamp = System.currentTimeMillis()
-//        test.testResultsDir.eachFile { it.lastModified = timestamp }
-//    }
-//
-//}
+task jenkinsTest{
+    inputs.files test.outputs.files
+    doLast{
+        def timestamp = System.currentTimeMillis()
+        test.testResultsDir.eachFile { it.lastModified = timestamp }
+    }
+
+}
 
 jacocoTestReport {
     dependsOn test
