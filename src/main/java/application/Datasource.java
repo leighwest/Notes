@@ -20,7 +20,6 @@ public class Datasource {
             '(' + COLUMN_NOTES_ID + ", " + COLUMN_NOTES_TITLE + ", " + COLUMN_NOTES_DATECREATED + ", " + COLUMN_NOTES_BODY +
             ") VALUES(?, ?, ?, ?)";
 
-    // NOT sure if I need this, all it does is return the notes ID when I'm giving it the notes ID
     public static final String QUERY_NOTE = "SELECT " + COLUMN_NOTES_ID + " FROM " +
             TABLE_NOTES + " WHERE " + COLUMN_NOTES_ID + " = ?";
 
