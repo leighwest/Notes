@@ -33,4 +33,13 @@ public class NotesTest {
     public void testGetBody_isEmptyOnInitialisation() {
         assertEquals(note.getBody().length(), 0);
     }
+
+    @Test
+    public void testSetTitle() {
+        note.setTitle("Example Title");
+        assertEquals("Example Title", note.getTitle());
+    }
+
+
+
 }

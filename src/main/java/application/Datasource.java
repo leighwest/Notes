@@ -71,6 +71,11 @@ public class Datasource {
             if (queryNote != null) {
                 queryNote.close();
             }
+
+            if (updateNote != null) {
+                updateNote.close();
+            }
+
         } catch (SQLException e) {
             System.out.println("Couldn't close connection: " + e.getMessage());
             e.printStackTrace();
@@ -127,7 +132,6 @@ public class Datasource {
                 note.setID(results.getInt(COLUMN_NOTES_ID));
                 note.setTitle(results.getString(COLUMN_NOTES_TITLE));
                 note.setDateCreated(LocalDateTime.parse(results.getString(COLUMN_NOTES_DATECREATED)));
-//                TODO: need to convert sql text to java localDateTime
                 note.setBody(results.getString(COLUMN_NOTES_BODY));
                 notes.add(note);
             }

@@ -78,7 +78,9 @@ task jenkinsTest{
     inputs.files test.outputs.files
     doLast{
         def timestamp = System.currentTimeMillis()
-        test.testResultsDir.eachFile { it.lastModified = timestamp }
+//        destinationFile = file("/build/test-results/test/TEST-NotesTest.xml")
+//        if (destinationFile != null)
+//        test.testResultsDir.eachFile { it.lastModified = timestamp }
     }
 
 }
