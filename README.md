@@ -8,7 +8,7 @@ While this is a relatively simple application from the user's perspective, my in
 
 ### Entering a Note
 
-![](/screenshots/Entering%20a%20Note.PNG?raw=true "Entering a Note")
+![](/screenshots/Entering%20a%20note.PNG?raw=true "Entering a Note")
 
 ### Jacoco Test Coverage
 
