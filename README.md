@@ -4,6 +4,10 @@ A JavaFx program which allows users to write, store, retrieve and update notes.
 
 While this is a relatively simple application from the user's perspective, my intention when building this application was to integrate CI/CD tools including Gradle, Artifactory, Jenkins and Jacoco.
 
+## Video Summary
+
+A two minute video summary detailing the technical and user features is available [here](https://vimeo.com/509638637)
+
 ## Screenshots
 
 ### Entering a Note
